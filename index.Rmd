@@ -1,0 +1,171 @@
+---
+title: "R markdown tutorial"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: cerulean
+    highlight: zenburn
+---
+
+normal text
+*italic text*
+**bold text**
+***bold italics***
+
+headers
+
+# Header 1
+## Header 2
+### Header 3
+#### Header 4
+##### Header 5
+###### Header 6
+
+these will be how headers turn up in the table of contents. If not in order Markdwon gets confused. Also decides the size
+
+lists
+
+- first item in the list
+- second item in list
+- third item in list
+
+ordered list
+
+1. first
+2. second
+3. third
+
+Block quotes 
+
+> this text will be quotes
+
+
+`code text`
+
+a <- 10
+ text text text 'code example`
+ 
+ 
+ For an image, either link the file or put the url in
+ ![](https://www.drodd.com/images14/r2.jpg)
+ 
+ to put a hyperlink in 
+ [url to original artwork](https://www.drodd.com/images14/r2.jpg)
+ 
+# Background to Gapminder
+ 
+Gapminder is an independent Swedish foundation with no *political, religious or economic affiliations*. Gapminder is a **fact tank**, not a think tank. Gapminder fights devastating misconceptions about global development. Gapminder produces *free teaching resources* making the world understandable based on reliable statistics. Gapminder promotes a fact-based worldview everyone can understand.  Gapminder collaborates with universities, UN, public agencies and non-governmental organizations. All Gapminder activities are governed by the board. We do not award grants. Gapminder Foundation is registered at Stockholm County Administration Board
+ 
+ For keyboard short cut help in R go to Tools - keyboard shortcuts
+ To insert chunks of R code go to insert at the top and click R. On a mac can use ctrl option I
+```{r}
+a <- 10
+b <- 15
+a*b
+```
+
+
+chunk uses
+There are a lot of things you can do in a code chunk:
+you can produce text output, tables, or graphics.
+You have fine control over all these output via chunk options, which can be provided inside the curly braces  
+For example, you can choose hide text output via the chunk option results = 'hide', or set the figure height to 4 inches via fig.height = 4.
+Each chunk needs a seperate name if you do name it
+Look at cheat sheet for chunk control options
+Chunk options are separated by commas, e.g.,
+```{r, chunk-label, results='hide', fig.height=4}```
+ 
+eval= false at end of code means that the output of the code chunk won't be included
+see website for more options
+
+
+can use set up chunk to set settings for the whole document (opts_chunk)
+
+# Installation instructions
+
+So to run this we need to install a few packages:
+
+1. ggplot2
+2. skimr
+3. DT
+
+To instal these we use
+
+```{r, packages needed, eval=FALSE}
+install.packages(c("skimr", "ggplot2", "DT"))
+```
+
+# Displaying data
+
+Data can be read in ro Markdown in different ways
+you can print data.frames
+
+```{R} 
+data(airquality)
+head(airquality)
+```
+
+You can use tibble instead of data and it looks nicer to the reader
+tibble is from tidyverse so new R. Tibble is a posh data frame that prints nicely
+Only prints the top 10 but tells you more info on the data not shown
+
+```{R}
+library(tibble)
+as_tibble(airquality)
+```
+
+
+## Displaying knitr::kable() tables
+We can use other packages to create html tables from our data.
+The simplest is to use the knitr::kable() function.
+This uses kable on just the head of airquality. This makes a proper html table
+
+```{R}
+library(knitr)
+data(airquality)
+kable(head(airquality), caption = "New York Air Quality Measurements")
+```
+
+
+## Interactive table
+Displaying interactive DT::datatable() tables
+You can display interactive html tables using function DT::datatable():
+
+```{R}
+library(DT)
+data(airquality)
+datatable(airquality, caption = "New York Air Quality Measurements")
+```
+
+This is really useful for sending to collaborators etc
+Allows all the data to be present in a useful way
+
+
+##Summarising data with skimr::skim()
+Fuction skimr::skim() provides a simple approach to displaying summary statistics that can be quickly skimmed quickly to understand data.
+```{R}
+skimr::skim(airquality)
+```
+
+
+# Plots
+
+By default, figures produced by R code will be placed immediately after the code chunk they were generated from.
+Let’s use ggplot2 to have a look to the relationship between a couple of variables
+
+```{R, yet another chunk, echo= FALSE, warning= FALSE, error= FALSE, message= FALSE}
+library(ggplot2)
+library("gapminder", lib.loc="~/R/win-library/3.5")
+
+p <- ggplot(gapminder, aes(x = gdpPercap, y = lifeExp, color = continent)) + 
+  geom_point()
+p
+library(plotly)
+
+ggplotly(p)
+```
+
+## interactive plots with plotly
+Wraps nicely around plotting library ggplot2
+
